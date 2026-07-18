@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; img-src 'self' data:;" />
+  <title>IT Support Desktop Client</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <div class="brand">
+        <span class="brand-dot"></span>
+        <span data-i18n="app.brand">IT Support Desktop Client</span>
+      </div>
+      <div class="device-status" id="deviceStatus" data-i18n="status.notConfigured">Not configured</div>
+    </header>
+
+    <nav class="tabs" id="tabs" style="display:none;">
+      <button class="tab-btn active" data-tab="newTicket" data-i18n="tabs.newRequest">New Request</button>
+      <button class="tab-btn" data-tab="chat" data-i18n="tabs.chat">Ticket Chat</button>
+      <button class="tab-btn" data-tab="settings" data-i18n="tabs.settings">Settings</button>
+    </nav>
+
+    <!-- ===== SETUP (first run) ===== -->
+    <section id="setupPanel" class="panel">
+      <h2 data-i18n="setup.title">Initial Setup</h2>
+      <p class="hint" data-i18n="setup.hint">Enter the information below to register this computer with the IT Support system.</p>
+
+      <label data-i18n="setup.serverLabel">Odoo server address</label>
+      <input id="setupBaseUrl" type="text" placeholder="https://erp.yourcompany.com" />
+
+      <label data-i18n="setup.apiKeyLabel">API Key</label>
+      <input id="setupApiKey" type="password" data-i18n-placeholder="setup.apiKeyPlaceholder" placeholder="API key provided by IT" />
+
+      <label data-i18n="setup.customerIdLabel">Customer ID</label>
+      <input id="setupCustomerId" type="number" data-i18n-placeholder="setup.customerIdPlaceholder" placeholder="e.g. 12" />
+
+      <label data-i18n="setup.ultraviewLabel">UltraViewer ID for this computer</label>
+      <input id="setupUltraview" type="text" placeholder="987654321" />
+
+      <label data-i18n="setup.userNameLabel">User name</label>
+      <input id="setupUserName" type="text" data-i18n-placeholder="setup.userNamePlaceholder" placeholder="John Smith" />
+
+      <label data-i18n="setup.userEmailLabel">User email</label>
+      <input id="setupUserEmail" type="email" data-i18n-placeholder="setup.userEmailPlaceholder" placeholder="j.smith@company.com" />
+
+      <label data-i18n="setup.userPhoneLabel">Phone number</label>
+      <input id="setupUserPhone" type="tel" data-i18n-placeholder="setup.userPhonePlaceholder" placeholder="+1 778 288 3053" />
+
+      <label data-i18n="setup.userDepartmentLabel">Department</label>
+      <input id="setupUserDepartment" type="text" data-i18n-placeholder="setup.userDepartmentPlaceholder" placeholder="e.g. Accounting, IT, Sales" />
+
+      <button id="btnRegister" class="btn-primary" data-i18n="setup.registerButton">Register Device</button>
+      <p class="error" id="setupError"></p>
+    </section>
+
+    <!-- ===== NEW TICKET ===== -->
+    <section id="newTicketPanel" class="panel" style="display:none;">
+      <h2 data-i18n="newTicket.title">Create Support Request</h2>
+
+      <label data-i18n="newTicket.priorityLabel">Priority</label>
+      <select id="ticketPriority">
+        <option value="1" selected data-i18n="newTicket.priorityNormal">Normal</option>
+        <option value="0" data-i18n="newTicket.priorityLow">Low</option>
+        <option value="2" data-i18n="newTicket.priorityHigh">High</option>
+        <option value="3" data-i18n="newTicket.priorityUrgent">Urgent</option>
+      </select>
+
+      <label data-i18n="newTicket.subjectLabel">Subject</label>
+      <input id="ticketSubject" type="text" data-i18n-placeholder="newTicket.subjectPlaceholder" placeholder="e.g. Cannot print Excel file" />
+
+      <label data-i18n="newTicket.descriptionLabel">Description</label>
+      <textarea id="ticketDescription" rows="5" data-i18n-placeholder="newTicket.descriptionPlaceholder" placeholder="Describe the issue and steps already tried..."></textarea>
+
+      <label data-i18n="newTicket.attachLabel">Attach Screenshots (optional) — or press Ctrl+V to paste</label>
+      <div class="attach-area" id="attachArea">
+        <input type="file" id="attachInput" accept="image/*" multiple style="display:none;" />
+        <button type="button" class="btn-secondary" id="btnAttach" data-i18n="newTicket.attachButton">📎 Add Images</button>
+        <div id="attachPreview" class="attach-preview"></div>
+      </div>
+
+      <button id="btnCreateTicket" class="btn-primary" data-i18n="newTicket.submitButton">Submit Request</button>
+      <p class="success" id="ticketSuccess"></p>
+      <p class="error" id="ticketError"></p>
+    </section>
+
+    <!-- ===== CHAT ===== -->
+    <section id="chatPanel" class="panel" style="display:none;">
+      <h2 data-i18n="chat.title">Chat with IT Support</h2>
+      <label data-i18n="chat.yourRequests">Your requests</label>
+      <select id="chatTicketSelect"></select>
+
+      <div id="chatEmptyState" class="empty-state" style="display:none;">
+        <p data-i18n="chat.emptyState">You don't have any support request yet.</p>
+        <button id="btnGoToNewRequest" class="btn-secondary" data-i18n="chat.createRequestButton">Create a Request</button>
+      </div>
+
+      <div id="chatActiveArea" style="display:none;">
+        <p class="hint" id="chatTicketLabel"></p>
+        <div id="chatMessages" class="chat-messages"></div>
+        <div class="row-inline">
+          <input id="chatInput" type="text" data-i18n-placeholder="chat.inputPlaceholder" placeholder="Type a message..." />
+          <button id="btnSendChat" class="btn-primary" data-i18n="chat.sendButton">Send</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SETTINGS ===== -->
+    <section id="settingsPanel" class="panel" style="display:none;">
+      <h2 data-i18n="settings.title">Settings</h2>
+
+      <label data-i18n="settings.language">Language</label>
+      <select id="languageSelect">
+        <option value="en">English</option>
+        <option value="vi">Tiếng Việt</option>
+        <option value="fr">Français</option>
+      </select>
+
+      <div class="info-row"><span data-i18n="settings.odooServer">Odoo server</span><span id="infoBaseUrl">-</span></div>
+      <div class="info-row"><span data-i18n="settings.deviceId">Device ID</span><span id="infoDeviceId">-</span></div>
+      <div class="info-row"><span data-i18n="settings.ultraviewId">UltraViewer ID</span><span id="infoUltraview">-</span></div>
+      <div class="info-row"><span data-i18n="settings.user">User</span><span id="infoUser">-</span></div>
+      <div class="info-row"><span data-i18n="settings.department">Department</span><span id="infoDepartment">-</span></div>
+      <div class="info-row"><span data-i18n="settings.phone">Phone</span><span id="infoPhone">-</span></div>
+    </section>
+  </div>
+
+  <script src="i18n.js"></script>
+  <script src="renderer.js"></script>
+</body>
+</html>

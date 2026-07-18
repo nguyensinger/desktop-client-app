@@ -1,0 +1,36 @@
+{
+  "name": "it-support-desktop-client",
+  "version": "1.0.0",
+  "description": "Desktop Client App - app cài trên máy khách hàng: khai báo thiết bị, chat và tạo ticket support",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "build:win": "electron-builder --win",
+    "build:mac": "electron-builder --mac"
+  },
+  "build": {
+    "appId": "com.yourcompany.itsupportdesktopclient",
+    "productName": "IT Support Desktop Client",
+    "win": {
+      "target": "nsis",
+      "icon": "assets/icon.ico"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "assets/icon.png"
+    },
+    "files": [
+      "src/**/*",
+      "package.json"
+    ]
+  },
+  "dependencies": {
+    "axios": "^1.18.0",
+    "node-machine-id": "^1.1.12",
+    "systeminformation": "^5.31.7"
+  },
+  "devDependencies": {
+    "electron": "^32.3.3",
+    "electron-builder": "^26.15.3"
+  }
+}

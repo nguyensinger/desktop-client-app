@@ -1,0 +1,21 @@
+# --- Secrets ---
+.env
+config.json
+*.pem
+*.key
+
+# --- Node ---
+node_modules/
+
+# --- Electron build output ---
+dist/
+build/
+out/
+release/
+
+# --- Editor / OS ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log
