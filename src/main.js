@@ -24,7 +24,7 @@ function createWindow() {
     width: 420,
     height: 640,
     resizable: false,
-    title: 'IT Support Desktop Client',
+    title: 'VM TECH Support Client',
     icon: path.join(__dirname, '..', 'assets', 'icon.png'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
@@ -61,10 +61,10 @@ function createTray() {
     trayIcon = nativeImage.createEmpty();
   }
   tray = new Tray(trayIcon.isEmpty() ? nativeImage.createEmpty() : trayIcon);
-  tray.setToolTip('IT Support Desktop Client');
+  tray.setToolTip('VM TECH Support Client');
 
   const contextMenu = Menu.buildFromTemplate([
-    { label: 'Open IT Support', click: () => createWindow() },
+    { label: 'Open VM TECH Support Client', click: () => createWindow() },
     { label: 'Create New Support Request', click: () => createWindow() },
     { type: 'separator' },
     {

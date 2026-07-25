@@ -10,7 +10,7 @@
   },
   "build": {
     "appId": "com.yourcompany.itsupportdesktopclient",
-    "productName": "IT Support Desktop Client",
+    "productName": "VM TECH Support Client",
     "win": {
       "target": "nsis",
       "icon": "assets/icon.ico"
