@@ -21,6 +21,7 @@
     },
     "files": [
       "src/**/*",
+      "assets/**/*",
       "package.json"
     ]
   },
