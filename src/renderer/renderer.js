@@ -440,9 +440,16 @@ function escapeHtml(str) {
 
 function stripHtml(htmlText) {
   // Odoo message_post lưu body dạng HTML (thường bọc trong <p>...</p>).
-  // Loại bỏ tag để hiển thị dạng text thuần cho gọn trên khung chat desktop.
+  // Loại bỏ tag để hiển thị dạng text thuần cho gọn trên khung chat desktop - nhưng
+  // đổi <br>/</p> thành newline TRƯỚC khi lấy textContent, vì textContent bỏ hẳn các
+  // tag đó (không tự chèn \n), khiến tin nhắn nhiều dòng (vd tin chào tự động khi tạo
+  // ticket) bị dồn lại thành 1 dòng dài. Cần .chat-bubble có white-space: pre-wrap để
+  // \n thực sự hiển thị xuống dòng.
+  const withBreaks = (htmlText || '')
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<\/p>\s*<p[^>]*>/gi, '\n\n');
   const div = document.createElement('div');
-  div.innerHTML = htmlText || '';
+  div.innerHTML = withBreaks;
   return (div.textContent || div.innerText || '').trim();
 }
 

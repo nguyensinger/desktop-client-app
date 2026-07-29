@@ -166,6 +166,7 @@ input:focus, select:focus, textarea:focus {
   border-radius: 10px;
   font-size: 12px;
   line-height: 1.4;
+  white-space: pre-wrap;
 }
 
 .chat-bubble .author { font-size: 10px; color: var(--text-muted); margin-bottom: 2px; display: block; }
