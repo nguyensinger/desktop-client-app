@@ -66,6 +66,9 @@ async function refreshSettingsInfo() {
   if (document.getElementById('infoDepartment')) {
     document.getElementById('infoDepartment').textContent = config.endUserDepartment || '-';
   }
+  if (document.getElementById('infoEmail')) {
+    document.getElementById('infoEmail').textContent = config.endUserEmail || '-';
+  }
   if (document.getElementById('infoPhone')) {
     document.getElementById('infoPhone').textContent = config.endUserPhone || '-';
   }

@@ -63,5 +63,6 @@
   "setup.userDepartmentLabel": "Département",
   "setup.userDepartmentPlaceholder": "Ex: Comptabilité, IT, Ventes",
   "settings.department": "Département",
+  "settings.email": "E-mail",
   "settings.phone": "Téléphone"
 }

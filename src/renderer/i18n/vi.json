@@ -63,5 +63,6 @@
   "setup.userDepartmentLabel": "Phòng ban",
   "setup.userDepartmentPlaceholder": "VD: Kế toán, IT, Kinh doanh",
   "settings.department": "Phòng ban",
+  "settings.email": "Email",
   "settings.phone": "Điện thoại"
 }
