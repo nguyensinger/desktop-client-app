@@ -27,7 +27,7 @@
       <h2 data-i18n="setup.title">Initial Setup</h2>
       <p class="hint" data-i18n="setup.hint">Enter the information below to register this computer with the IT Support system.</p>
 
-      <label data-i18n="setup.serverLabel">Odoo server address</label>
+      <label data-i18n="setup.serverLabel">VM TECH server address</label>
       <input id="setupBaseUrl" type="text" placeholder="https://erp.yourcompany.com" />
 
       <label data-i18n="setup.apiKeyLabel">API Key</label>
@@ -52,6 +52,7 @@
       <input id="setupUserDepartment" type="text" data-i18n-placeholder="setup.userDepartmentPlaceholder" placeholder="e.g. Accounting, IT, Sales" />
 
       <button id="btnRegister" class="btn-primary" data-i18n="setup.registerButton">Register Device</button>
+      <button id="btnCancelEdit" class="btn-secondary" style="display:none;" data-i18n="setup.cancelButton">Cancel</button>
       <p class="error" id="setupError"></p>
     </section>
 
@@ -117,13 +118,26 @@
         <option value="fr">Français</option>
       </select>
 
-      <div class="info-row"><span data-i18n="settings.odooServer">Odoo server</span><span id="infoBaseUrl">-</span></div>
+      <div class="info-row"><span data-i18n="settings.odooServer">VM TECH server</span><span id="infoBaseUrl">-</span></div>
       <div class="info-row"><span data-i18n="settings.deviceId">Device ID</span><span id="infoDeviceId">-</span></div>
       <div class="info-row"><span data-i18n="settings.ultraviewId">UltraViewer ID</span><span id="infoUltraview">-</span></div>
       <div class="info-row"><span data-i18n="settings.user">User</span><span id="infoUser">-</span></div>
       <div class="info-row"><span data-i18n="settings.department">Department</span><span id="infoDepartment">-</span></div>
       <div class="info-row"><span data-i18n="settings.email">Email</span><span id="infoEmail">-</span></div>
       <div class="info-row"><span data-i18n="settings.phone">Phone</span><span id="infoPhone">-</span></div>
+
+      <div id="editSettingsGate" style="margin-top:16px;">
+        <button id="btnEditSettings" class="btn-secondary" data-i18n="settings.editButton">🔒 Edit Settings</button>
+      </div>
+      <div id="editSettingsPrompt" style="display:none; margin-top:12px;">
+        <label data-i18n="settings.adminKeyLabel">Manager API Key</label>
+        <input id="adminApiKeyInput" type="password" data-i18n-placeholder="settings.adminKeyPlaceholder" placeholder="Enter a Manager's API key" />
+        <div class="row-inline" style="margin-top:10px;">
+          <button id="btnUnlockEdit" class="btn-primary" data-i18n="settings.unlockButton">Unlock</button>
+          <button id="btnCancelUnlock" class="btn-secondary" data-i18n="setup.cancelButton">Cancel</button>
+        </div>
+        <p class="error" id="unlockError"></p>
+      </div>
     </section>
   </div>
 

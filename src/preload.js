@@ -27,4 +27,5 @@ contextBridge.exposeInMainWorld('itSupportAgent', {
     return () => ipcRenderer.removeListener('realtime:event', handler);
   },
   getClipboardImage: () => ipcRenderer.invoke('clipboard:getImage'),
+  verifyManager: (apiKey) => ipcRenderer.invoke('admin:verifyManager', apiKey),
 });

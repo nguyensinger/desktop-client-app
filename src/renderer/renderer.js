@@ -10,6 +10,7 @@ const els = {
 };
 
 let currentConfig = null;
+let isEditMode = false;
 
 async function init() {
   currentConfig = await window.itSupportAgent.getConfig();
@@ -92,6 +93,22 @@ function bindEvents() {
   });
 
   document.getElementById('btnRegister').addEventListener('click', onRegister);
+  document.getElementById('btnEditSettings').addEventListener('click', () => {
+    document.getElementById('editSettingsGate').style.display = 'none';
+    document.getElementById('editSettingsPrompt').style.display = 'block';
+    document.getElementById('adminApiKeyInput').value = '';
+    document.getElementById('unlockError').textContent = '';
+    document.getElementById('adminApiKeyInput').focus();
+  });
+  document.getElementById('btnCancelUnlock').addEventListener('click', () => {
+    document.getElementById('editSettingsPrompt').style.display = 'none';
+    document.getElementById('editSettingsGate').style.display = 'block';
+  });
+  document.getElementById('btnUnlockEdit').addEventListener('click', onUnlockEdit);
+  document.getElementById('adminApiKeyInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') onUnlockEdit();
+  });
+  document.getElementById('btnCancelEdit').addEventListener('click', exitEditMode);
   document.getElementById('btnCreateTicket').addEventListener('click', onCreateTicket);
   document.getElementById('btnAttach').addEventListener('click', () => {
     document.getElementById('attachInput').click();
@@ -131,6 +148,59 @@ function bindEvents() {
   }
 }
 
+async function onUnlockEdit() {
+  const errorEl = document.getElementById('unlockError');
+  const apiKey = document.getElementById('adminApiKeyInput').value.trim();
+  errorEl.textContent = '';
+  if (!apiKey) {
+    errorEl.textContent = window.i18n.t('settings.errorEnterKey');
+    return;
+  }
+
+  const btn = document.getElementById('btnUnlockEdit');
+  btn.disabled = true;
+  try {
+    // Chỉ dùng key này để kiểm tra quyền qua whoami - KHÔNG lưu lại, không thay
+    // apiKey đang hoạt động của thiết bị (đó là key riêng, dùng cho ticket/chat).
+    await window.itSupportAgent.verifyManager(apiKey);
+    document.getElementById('editSettingsPrompt').style.display = 'none';
+    await enterEditMode();
+  } catch (err) {
+    errorEl.textContent = window.i18n.t('common.error', { error: err.message });
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+async function enterEditMode() {
+  isEditMode = true;
+  const config = await window.itSupportAgent.getConfig();
+  document.getElementById('setupBaseUrl').value = config.odooBaseUrl || '';
+  document.getElementById('setupApiKey').value = config.apiKey || '';
+  document.getElementById('setupCustomerId').value = config.customerId || '';
+  document.getElementById('setupUltraview').value = config.ultraviewId || '';
+  document.getElementById('setupUserName').value = config.endUserName || '';
+  document.getElementById('setupUserEmail').value = config.endUserEmail || '';
+  document.getElementById('setupUserPhone').value = config.endUserPhone || '';
+  document.getElementById('setupUserDepartment').value = config.endUserDepartment || '';
+  document.getElementById('setupError').textContent = '';
+  document.getElementById('btnRegister').textContent = window.i18n.t('setup.saveButton');
+  document.getElementById('btnCancelEdit').style.display = 'inline-block';
+
+  els.tabs.style.display = 'none';
+  hideAllPanels();
+  els.setupPanel.style.display = 'block';
+}
+
+function exitEditMode() {
+  isEditMode = false;
+  document.getElementById('btnRegister').textContent = window.i18n.t('setup.registerButton');
+  document.getElementById('btnCancelEdit').style.display = 'none';
+  document.getElementById('editSettingsGate').style.display = 'block';
+  document.getElementById('editSettingsPrompt').style.display = 'none';
+  showMainApp();
+}
+
 async function onRegister() {
   const errorEl = document.getElementById('setupError');
   errorEl.textContent = '';
@@ -150,6 +220,7 @@ async function onRegister() {
   }
 
   const btn = document.getElementById('btnRegister');
+  const wasEditMode = isEditMode;
   btn.disabled = true;
   btn.textContent = window.i18n.t('setup.registering');
 
@@ -163,12 +234,17 @@ async function onRegister() {
       endUserPhone,
       endUserDepartment,
     });
+    if (wasEditMode) {
+      isEditMode = false;
+      document.getElementById('btnCancelEdit').style.display = 'none';
+      document.getElementById('editSettingsGate').style.display = 'block';
+    }
     showMainApp();
   } catch (err) {
     errorEl.textContent = window.i18n.t('common.error', { error: err.message });
   } finally {
     btn.disabled = false;
-    btn.textContent = window.i18n.t('setup.registerButton');
+    btn.textContent = window.i18n.t(wasEditMode ? 'setup.saveButton' : 'setup.registerButton');
   }
 }
 

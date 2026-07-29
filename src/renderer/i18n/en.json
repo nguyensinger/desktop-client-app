@@ -7,7 +7,7 @@
   "tabs.settings": "Settings",
   "setup.title": "Initial Setup",
   "setup.hint": "Enter the information below to register this computer with the IT Support system.",
-  "setup.serverLabel": "Odoo server address",
+  "setup.serverLabel": "VM TECH server address",
   "setup.apiKeyLabel": "API Key",
   "setup.apiKeyPlaceholder": "API key provided by IT",
   "setup.customerIdLabel": "Customer ID",
@@ -44,7 +44,7 @@
   "chat.requestLabel": "Request #{id}",
   "chat.errorSendFailed": "Could not send message: {error}",
   "settings.title": "Settings",
-  "settings.odooServer": "Odoo server",
+  "settings.odooServer": "VM TECH server",
   "settings.deviceId": "Device ID",
   "settings.ultraviewId": "UltraViewer ID",
   "settings.user": "User",
@@ -64,5 +64,12 @@
   "setup.userDepartmentPlaceholder": "e.g. Accounting, IT, Sales",
   "settings.department": "Department",
   "settings.email": "Email",
-  "settings.phone": "Phone"
+  "settings.phone": "Phone",
+  "settings.editButton": "🔒 Edit Settings",
+  "settings.adminKeyLabel": "Manager API Key",
+  "settings.adminKeyPlaceholder": "Enter a Manager's API key",
+  "settings.unlockButton": "Unlock",
+  "settings.errorEnterKey": "Please enter a Manager API key.",
+  "setup.saveButton": "Save Changes",
+  "setup.cancelButton": "Cancel"
 }

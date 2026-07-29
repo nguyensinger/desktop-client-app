@@ -107,6 +107,34 @@ async function poll(channels, last = 0) {
   return result;
 }
 
+async function verifyManager(apiKey) {
+  // Dùng để mở khoá "Edit Settings" - gọi whoami bằng API key NGƯỜI ADMIN vừa nhập
+  // (không phải apiKey đang lưu của thiết bị), chỉ để kiểm tra quyền, không lưu lại.
+  const { odooBaseUrl } = getConfig();
+  if (!odooBaseUrl) {
+    throw new Error('Chưa cấu hình odooBaseUrl.');
+  }
+  const http = axios.create({
+    baseURL: odooBaseUrl.replace(/\/+$/, ''),
+    timeout: 15000,
+    headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+  });
+  const response = await http.post('/api/v1/whoami', {
+    jsonrpc: '2.0',
+    method: 'call',
+    params: {},
+  });
+  const data = response.data;
+  if (data.error) {
+    throw new Error(data.error.data?.message || data.error.message || 'Lỗi không xác định từ server');
+  }
+  const result = data.result;
+  if (result && typeof result === 'object' && !Array.isArray(result) && result.error) {
+    throw new Error(result.error);
+  }
+  return result;
+}
+
 module.exports = {
   registerDevice,
   heartbeat,
@@ -116,4 +144,5 @@ module.exports = {
   getMessages,
   getRealtimeChannel,
   poll,
+  verifyManager,
 };

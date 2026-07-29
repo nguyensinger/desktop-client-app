@@ -7,7 +7,7 @@
   "tabs.settings": "Paramètres",
   "setup.title": "Configuration initiale",
   "setup.hint": "Saisissez les informations ci-dessous pour enregistrer cet ordinateur dans le système IT Support.",
-  "setup.serverLabel": "Adresse du serveur Odoo",
+  "setup.serverLabel": "Adresse du serveur VM TECH",
   "setup.apiKeyLabel": "Clé API",
   "setup.apiKeyPlaceholder": "Clé API fournie par le service IT",
   "setup.customerIdLabel": "ID client",
@@ -44,7 +44,7 @@
   "chat.requestLabel": "Demande #{id}",
   "chat.errorSendFailed": "Impossible d'envoyer le message : {error}",
   "settings.title": "Paramètres",
-  "settings.odooServer": "Serveur Odoo",
+  "settings.odooServer": "Serveur VM TECH",
   "settings.deviceId": "ID de l'appareil",
   "settings.ultraviewId": "ID UltraViewer",
   "settings.user": "Utilisateur",
@@ -64,5 +64,12 @@
   "setup.userDepartmentPlaceholder": "Ex: Comptabilité, IT, Ventes",
   "settings.department": "Département",
   "settings.email": "E-mail",
-  "settings.phone": "Téléphone"
+  "settings.phone": "Téléphone",
+  "settings.editButton": "🔒 Modifier les paramètres",
+  "settings.adminKeyLabel": "Clé API du Manager",
+  "settings.adminKeyPlaceholder": "Entrez la clé API d'un Manager",
+  "settings.unlockButton": "Déverrouiller",
+  "settings.errorEnterKey": "Veuillez entrer une clé API de Manager.",
+  "setup.saveButton": "Enregistrer",
+  "setup.cancelButton": "Annuler"
 }

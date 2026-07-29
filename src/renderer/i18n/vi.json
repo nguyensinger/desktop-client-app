@@ -7,7 +7,7 @@
   "tabs.settings": "Cài đặt",
   "setup.title": "Thiết lập lần đầu",
   "setup.hint": "Nhập thông tin dưới đây để đăng ký máy này với hệ thống IT Support.",
-  "setup.serverLabel": "Địa chỉ máy chủ Odoo",
+  "setup.serverLabel": "Địa chỉ máy chủ VM TECH",
   "setup.apiKeyLabel": "API Key",
   "setup.apiKeyPlaceholder": "API key do bộ phận IT cung cấp",
   "setup.customerIdLabel": "Mã khách hàng",
@@ -44,7 +44,7 @@
   "chat.requestLabel": "Yêu cầu #{id}",
   "chat.errorSendFailed": "Không gửi được tin nhắn: {error}",
   "settings.title": "Cài đặt",
-  "settings.odooServer": "Máy chủ Odoo",
+  "settings.odooServer": "Máy chủ VM TECH",
   "settings.deviceId": "Mã thiết bị",
   "settings.ultraviewId": "UltraViewer ID",
   "settings.user": "Người dùng",
@@ -64,5 +64,12 @@
   "setup.userDepartmentPlaceholder": "VD: Kế toán, IT, Kinh doanh",
   "settings.department": "Phòng ban",
   "settings.email": "Email",
-  "settings.phone": "Điện thoại"
+  "settings.phone": "Điện thoại",
+  "settings.editButton": "🔒 Chỉnh sửa Cài đặt",
+  "settings.adminKeyLabel": "API Key của Manager",
+  "settings.adminKeyPlaceholder": "Nhập API key của một tài khoản Manager",
+  "settings.unlockButton": "Mở khoá",
+  "settings.errorEnterKey": "Vui lòng nhập API Key của Manager.",
+  "setup.saveButton": "Lưu thay đổi",
+  "setup.cancelButton": "Huỷ"
 }

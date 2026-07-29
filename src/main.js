@@ -203,6 +203,14 @@ ipcMain.handle('i18n:load', (event, lang) => {
 
 ipcMain.handle('config:set', (event, partial) => setConfig(partial));
 
+ipcMain.handle('admin:verifyManager', async (event, apiKey) => {
+  const who = await api.verifyManager(apiKey);
+  if (!who.is_manager) {
+    throw new Error('This account does not have IT Support Manager permission.');
+  }
+  return who;
+});
+
 ipcMain.handle('device:collectInfo', async () => collectDeviceInfo());
 
 ipcMain.handle('device:register', async (event, formData) => {
