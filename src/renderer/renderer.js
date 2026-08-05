@@ -19,6 +19,9 @@ async function init() {
   document.getElementById('languageSelect').value = window.i18n.getCurrentLanguage();
 
   bindEvents();
+  window.itSupportAgent.onUpdateDownloaded(() => {
+    document.getElementById('updateBanner').style.display = 'flex';
+  });
   if (currentConfig.deviceId) {
     showMainApp();
   } else {
@@ -93,6 +96,9 @@ function bindEvents() {
   });
 
   document.getElementById('btnRegister').addEventListener('click', onRegister);
+  document.getElementById('btnInstallUpdate').addEventListener('click', () => {
+    window.itSupportAgent.installUpdate();
+  });
   document.getElementById('btnEditSettings').addEventListener('click', () => {
     document.getElementById('editSettingsGate').style.display = 'none';
     document.getElementById('editSettingsPrompt').style.display = 'block';

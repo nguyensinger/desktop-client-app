@@ -1,5 +1,7 @@
 {
   "app.brand": "VM TECH Support Client",
+  "update.available": "Une nouvelle version est prête.",
+  "update.button": "Redémarrer et mettre à jour",
   "status.notConfigured": "Non configuré",
   "status.connected": "Connecté",
   "tabs.newRequest": "Nouvelle demande",

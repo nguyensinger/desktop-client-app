@@ -44,6 +44,29 @@ body {
   border-radius: 12px;
 }
 
+.update-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 18px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 12px;
+}
+.update-banner button {
+  background: #fff;
+  color: var(--accent);
+  border: none;
+  border-radius: 6px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.update-banner button:hover { background: #f1f1f1; }
+
 .tabs {
   display: flex;
   border-bottom: 1px solid var(--border);

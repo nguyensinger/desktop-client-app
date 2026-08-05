@@ -1,11 +1,20 @@
 name: Build Desktop Agent
 
-# Chạy khi đẩy tag dạng v1.0.0, v1.0.1... hoặc kích hoạt thủ công từ tab Actions trên GitHub
+# Chạy khi đẩy tag dạng v1.0.0, v1.0.1... hoặc kích hoạt thủ công từ tab Actions trên GitHub.
+# Đẩy tag = phát hành thật: publish lên GitHub Releases kèm latest.yml/latest-mac.yml để
+# electron-updater (auto-update trong app) tìm thấy bản mới. Kích hoạt thủ công = chỉ build
+# thử, không publish, dùng để kiểm tra build có chạy được không.
+#
+# package.json's build:mac/build:win mặc định --publish never (an toàn khi build ở máy
+# local) - job này override lại bằng --publish always CHỈ khi trigger là tag push.
 on:
   push:
     tags:
       - 'v*'
   workflow_dispatch: {}
+
+permissions:
+  contents: write
 
 jobs:
   build-mac:
@@ -20,7 +29,14 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Build macOS dmg
+      - name: Build and publish macOS dmg (tag push)
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx electron-builder --mac --universal --publish always
+
+      - name: Build macOS dmg only (manual test build)
+        if: github.event_name != 'push'
         run: npm run build:mac
 
       - name: Upload dmg artifact
@@ -41,7 +57,14 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Build Windows exe
+      - name: Build and publish Windows exe (tag push)
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx electron-builder --win --publish always
+
+      - name: Build Windows exe only (manual test build)
+        if: github.event_name != 'push'
         run: npm run build:win
 
       - name: Upload exe artifact

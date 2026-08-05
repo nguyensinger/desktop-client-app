@@ -5,6 +5,7 @@
 const { app, BrowserWindow, Tray, Menu, ipcMain, nativeImage } = require('electron');
 const path = require('path');
 const fs = require('fs');
+const { autoUpdater } = require('electron-updater');
 
 const { getConfig, setConfig, isConfigured, hasServerCredentials } = require('./config');
 const { collectDeviceInfo } = require('./deviceInfo');
@@ -153,6 +154,31 @@ async function tryRecoverDeviceId() {
 }
 
 
+// ---------- Auto-update ----------
+// Tải bản mới về nền khi có, nhưng KHÔNG tự cài ngay - chỉ báo cho renderer hiển thị
+// thông báo, người dùng bấm "Update" mới quitAndInstall (tránh gián đoạn khi họ đang
+// gõ mô tả ticket hoặc chat dở giữa chừng).
+autoUpdater.autoDownload = true;
+autoUpdater.autoInstallOnAppQuit = false;
+
+autoUpdater.on('update-downloaded', (info) => {
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.webContents.send('update:downloaded', { version: info.version });
+  }
+});
+
+autoUpdater.on('error', (err) => {
+  // Lỗi check/tải update (offline, không có bản mới đã publish, v.v.) không nên làm
+  // phiền người dùng - chỉ log lại, app vẫn hoạt động bình thường với bản hiện tại.
+  console.error('[auto-update] lỗi:', err && (err.stack || err.message) || err);
+});
+
+function checkForUpdates() {
+  autoUpdater.checkForUpdates().catch((err) => {
+    console.error('[auto-update] checkForUpdates thất bại:', err.message);
+  });
+}
+
 // ---------- Auto-start cùng Windows ----------
 function applyAutoStartSetting() {
   const { autoStart } = getConfig();
@@ -165,6 +191,8 @@ function applyAutoStartSetting() {
 app.whenReady().then(async () => {
   applyAutoStartSetting();
   createTray();
+  checkForUpdates();
+  setInterval(checkForUpdates, 6 * 60 * 60 * 1000); // kiểm tra lại mỗi 6 giờ - app chạy nền dài hạn qua tray
   if (isConfigured()) {
     startHeartbeatLoop();
   } else if (hasServerCredentials()) {
@@ -190,6 +218,11 @@ app.on('window-all-closed', (e) => {
 // ---------- IPC handlers (giao tiếp với renderer process / UI) ----------
 
 ipcMain.handle('config:get', () => getConfig());
+
+ipcMain.handle('update:install', () => {
+  app.isQuiting = true;
+  autoUpdater.quitAndInstall();
+});
 
 ipcMain.handle('i18n:load', (event, lang) => {
   // Chỉ cho phép đúng 3 mã ngôn ngữ đã hỗ trợ - tránh path traversal nếu renderer

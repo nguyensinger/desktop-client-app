@@ -1,5 +1,7 @@
 {
   "app.brand": "VM TECH Support Client",
+  "update.available": "Đã có phiên bản mới.",
+  "update.button": "Khởi động lại & Cập nhật",
   "status.notConfigured": "Chưa cấu hình",
   "status.connected": "Đã kết nối",
   "tabs.newRequest": "Yêu cầu mới",

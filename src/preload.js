@@ -28,4 +28,11 @@ contextBridge.exposeInMainWorld('itSupportAgent', {
   },
   getClipboardImage: () => ipcRenderer.invoke('clipboard:getImage'),
   verifyManager: (apiKey) => ipcRenderer.invoke('admin:verifyManager', apiKey),
+
+  installUpdate: () => ipcRenderer.invoke('update:install'),
+  onUpdateDownloaded: (callback) => {
+    const handler = (event, data) => callback(data);
+    ipcRenderer.on('update:downloaded', handler);
+    return () => ipcRenderer.removeListener('update:downloaded', handler);
+  },
 });
