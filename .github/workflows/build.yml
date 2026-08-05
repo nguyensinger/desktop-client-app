@@ -17,7 +17,29 @@ permissions:
   contents: write
 
 jobs:
+  # Tạo sẵn 1 GitHub Release TRƯỚC khi build, chỉ khi trigger là tag push. Lý do: nếu để
+  # electron-builder tự "tạo release nếu chưa có" thì mỗi publish target (mac có 2 target
+  # dmg+zip, cộng thêm job win riêng) đều tự kiểm tra "release đã tồn tại chưa" gần như
+  # đồng thời - dẫn đến race condition, mỗi target tưởng release chưa tồn tại nên tự tạo
+  # 1 cái riêng => nhiều release trùng tag, mỗi cái chỉ có 1 phần file (đã gặp thực tế).
+  # Tạo sẵn ở đây thì mọi target sau đó chỉ cần tìm-và-upload vào release có sẵn, không
+  # còn ai phải "tạo mới" nữa nên hết race.
+  create-release:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create GitHub Release for this tag
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${{ github.ref_name }}" \
+            --title "${{ github.ref_name }}" \
+            --generate-notes
+
   build-mac:
+    needs: [create-release]
+    if: always() && (needs.create-release.result == 'success' || needs.create-release.result == 'skipped')
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
@@ -46,10 +68,8 @@ jobs:
           path: dist/*.dmg
 
   build-win:
-    needs: build-mac
-    # Chạy TUẦN TỰ sau build-mac, không song song - nếu cả 2 job cùng publish cùng
-    # lúc cho cùng 1 tag, electron-builder không kịp thấy release mà job kia vừa tạo,
-    # dẫn đến mỗi job tự tạo 1 release riêng (rời rạc, mỗi cái chỉ có 1 nửa file).
+    needs: [create-release]
+    if: always() && (needs.create-release.result == 'success' || needs.create-release.result == 'skipped')
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
