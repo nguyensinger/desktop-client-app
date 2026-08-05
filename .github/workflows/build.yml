@@ -46,6 +46,10 @@ jobs:
           path: dist/*.dmg
 
   build-win:
+    needs: build-mac
+    # Chạy TUẦN TỰ sau build-mac, không song song - nếu cả 2 job cùng publish cùng
+    # lúc cho cùng 1 tag, electron-builder không kịp thấy release mà job kia vừa tạo,
+    # dẫn đến mỗi job tự tạo 1 release riêng (rời rạc, mỗi cái chỉ có 1 nửa file).
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4

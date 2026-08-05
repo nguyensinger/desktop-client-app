@@ -14,7 +14,8 @@
     "publish": {
       "provider": "github",
       "owner": "nguyensinger",
-      "repo": "desktop-client-app"
+      "repo": "desktop-client-app",
+      "releaseType": "release"
     },
     "win": {
       "target": "nsis",
