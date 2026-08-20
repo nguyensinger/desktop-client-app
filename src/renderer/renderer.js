@@ -33,6 +33,10 @@ function showSetup() {
   els.tabs.style.display = 'none';
   hideAllPanels();
   els.setupPanel.style.display = 'block';
+  // First run always starts on the simple pairing-code path - manual/advanced
+  // is opt-in via the link, not the default.
+  document.getElementById('pairModeSection').style.display = 'block';
+  document.getElementById('manualModeSection').style.display = 'none';
   els.deviceStatus.textContent = window.i18n.t('status.notConfigured');
 }
 
@@ -96,6 +100,12 @@ function bindEvents() {
   });
 
   document.getElementById('btnRegister').addEventListener('click', onRegister);
+  document.getElementById('btnPair').addEventListener('click', onPair);
+  document.getElementById('linkShowManualSetup').addEventListener('click', (e) => {
+    e.preventDefault();
+    document.getElementById('pairModeSection').style.display = 'none';
+    document.getElementById('manualModeSection').style.display = 'block';
+  });
   document.getElementById('btnInstallUpdate').addEventListener('click', () => {
     window.itSupportAgent.installUpdate();
   });
@@ -196,6 +206,11 @@ async function enterEditMode() {
   els.tabs.style.display = 'none';
   hideAllPanels();
   els.setupPanel.style.display = 'block';
+  // Editing an existing install always goes straight to the advanced form -
+  // there's no "re-pair with a code" concept for a device that's already
+  // registered, and the manual fields are what actually need editing here.
+  document.getElementById('pairModeSection').style.display = 'none';
+  document.getElementById('manualModeSection').style.display = 'block';
 }
 
 function exitEditMode() {
@@ -251,6 +266,44 @@ async function onRegister() {
   } finally {
     btn.disabled = false;
     btn.textContent = window.i18n.t(wasEditMode ? 'setup.saveButton' : 'setup.registerButton');
+  }
+}
+
+async function onPair() {
+  const errorEl = document.getElementById('pairError');
+  errorEl.textContent = '';
+
+  const pairingCode = document.getElementById('pairCode').value.trim().toUpperCase();
+  const endUserName = document.getElementById('pairUserName').value.trim();
+  const endUserEmail = document.getElementById('pairUserEmail').value.trim();
+  const endUserPhone = document.getElementById('pairUserPhone').value.trim();
+  const endUserDepartment = document.getElementById('pairUserDepartment').value.trim();
+  const ultraviewId = document.getElementById('pairUltraview').value.trim();
+
+  if (!pairingCode || !endUserName || !endUserEmail) {
+    errorEl.textContent = window.i18n.t('setup.pairErrorFillFields');
+    return;
+  }
+
+  const btn = document.getElementById('btnPair');
+  btn.disabled = true;
+  btn.textContent = window.i18n.t('setup.registering');
+
+  try {
+    await window.itSupportAgent.pairWithCode({
+      pairingCode,
+      endUserName,
+      endUserEmail,
+      endUserPhone,
+      endUserDepartment,
+      ultraviewId,
+    });
+    showMainApp();
+  } catch (err) {
+    errorEl.textContent = window.i18n.t('common.error', { error: err.message });
+  } finally {
+    btn.disabled = false;
+    btn.textContent = window.i18n.t('setup.pairButton');
   }
 }
 

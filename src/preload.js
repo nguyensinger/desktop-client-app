@@ -11,6 +11,7 @@ contextBridge.exposeInMainWorld('itSupportAgent', {
   loadTranslations: (lang) => ipcRenderer.invoke('i18n:load', lang),
   collectDeviceInfo: () => ipcRenderer.invoke('device:collectInfo'),
   registerDevice: (formData) => ipcRenderer.invoke('device:register', formData),
+  pairWithCode: (formData) => ipcRenderer.invoke('device:pairWithCode', formData),
   createTicket: (payload) => ipcRenderer.invoke('ticket:create', payload),
   listTicketsForDevice: () => ipcRenderer.invoke('ticket:listForDevice'),
   postMessage: (ticketId, body) => ipcRenderer.invoke('ticket:postMessage', { ticketId, body }),

@@ -30,35 +30,72 @@
     <!-- ===== SETUP (first run) ===== -->
     <section id="setupPanel" class="panel">
       <h2 data-i18n="setup.title">Initial Setup</h2>
-      <p class="hint" data-i18n="setup.hint">Enter the information below to register this computer with the IT Support system.</p>
 
-      <label data-i18n="setup.serverLabel">VM TECH server address</label>
-      <input id="setupBaseUrl" type="text" placeholder="https://erp.yourcompany.com" />
+      <!-- ---- Pairing code mode (default): the only info the end user needs is
+           their own name/department + a short code from their VM TECH account.
+           No API key, no numeric Customer ID. ---- -->
+      <div id="pairModeSection">
+        <p class="hint" data-i18n="setup.pairHint">Sign in at vmtech.ca, go to "Set Up Desktop Client" to get a pairing code, then enter it below with your own info.</p>
 
-      <label data-i18n="setup.apiKeyLabel">API Key</label>
-      <input id="setupApiKey" type="password" data-i18n-placeholder="setup.apiKeyPlaceholder" placeholder="API key provided by IT" />
+        <label data-i18n="setup.pairCodeLabel">Pairing Code</label>
+        <input id="pairCode" type="text" maxlength="6" style="text-transform:uppercase; letter-spacing:0.2em; font-weight:bold;" data-i18n-placeholder="setup.pairCodePlaceholder" placeholder="e.g. A1B2C3" />
 
-      <label data-i18n="setup.customerIdLabel">Customer ID</label>
-      <input id="setupCustomerId" type="number" data-i18n-placeholder="setup.customerIdPlaceholder" placeholder="e.g. 12" />
+        <label data-i18n="setup.userNameLabel">User name</label>
+        <input id="pairUserName" type="text" data-i18n-placeholder="setup.userNamePlaceholder" placeholder="John Smith" />
 
-      <label data-i18n="setup.ultraviewLabel">UltraViewer ID for this computer</label>
-      <input id="setupUltraview" type="text" placeholder="987654321" />
+        <label data-i18n="setup.userEmailLabel">User email</label>
+        <input id="pairUserEmail" type="email" data-i18n-placeholder="setup.userEmailPlaceholder" placeholder="j.smith@company.com" />
 
-      <label data-i18n="setup.userNameLabel">User name</label>
-      <input id="setupUserName" type="text" data-i18n-placeholder="setup.userNamePlaceholder" placeholder="John Smith" />
+        <label data-i18n="setup.userPhoneLabel">Phone number</label>
+        <input id="pairUserPhone" type="tel" data-i18n-placeholder="setup.userPhonePlaceholder" placeholder="+1 778 288 3053" />
 
-      <label data-i18n="setup.userEmailLabel">User email</label>
-      <input id="setupUserEmail" type="email" data-i18n-placeholder="setup.userEmailPlaceholder" placeholder="j.smith@company.com" />
+        <label data-i18n="setup.userDepartmentLabel">Department</label>
+        <input id="pairUserDepartment" type="text" data-i18n-placeholder="setup.userDepartmentPlaceholder" placeholder="e.g. Accounting, IT, Sales" />
 
-      <label data-i18n="setup.userPhoneLabel">Phone number</label>
-      <input id="setupUserPhone" type="tel" data-i18n-placeholder="setup.userPhonePlaceholder" placeholder="+1 778 288 3053" />
+        <label data-i18n="setup.ultraviewLabel">UltraViewer ID for this computer</label>
+        <input id="pairUltraview" type="text" placeholder="987654321" />
 
-      <label data-i18n="setup.userDepartmentLabel">Department</label>
-      <input id="setupUserDepartment" type="text" data-i18n-placeholder="setup.userDepartmentPlaceholder" placeholder="e.g. Accounting, IT, Sales" />
+        <button id="btnPair" class="btn-primary" data-i18n="setup.pairButton">Connect with Pairing Code</button>
+        <p class="error" id="pairError"></p>
 
-      <button id="btnRegister" class="btn-primary" data-i18n="setup.registerButton">Register Device</button>
-      <button id="btnCancelEdit" class="btn-secondary" style="display:none;" data-i18n="setup.cancelButton">Cancel</button>
-      <p class="error" id="setupError"></p>
+        <p class="hint">
+          <a href="#" id="linkShowManualSetup" data-i18n="setup.manualLink">Advanced: set up manually instead</a>
+        </p>
+      </div>
+
+      <!-- ---- Manual mode: kept for troubleshooting / editing an existing
+           install's settings (enterEditMode reuses this same section). ---- -->
+      <div id="manualModeSection" style="display:none;">
+        <p class="hint" data-i18n="setup.hint">Enter the information below to register this computer with the IT Support system.</p>
+
+        <label data-i18n="setup.serverLabel">VM TECH server address</label>
+        <input id="setupBaseUrl" type="text" placeholder="https://erp.yourcompany.com" />
+
+        <label data-i18n="setup.apiKeyLabel">API Key</label>
+        <input id="setupApiKey" type="password" data-i18n-placeholder="setup.apiKeyPlaceholder" placeholder="API key provided by IT" />
+
+        <label data-i18n="setup.customerIdLabel">Customer ID</label>
+        <input id="setupCustomerId" type="number" data-i18n-placeholder="setup.customerIdPlaceholder" placeholder="e.g. 12" />
+
+        <label data-i18n="setup.ultraviewLabel">UltraViewer ID for this computer</label>
+        <input id="setupUltraview" type="text" placeholder="987654321" />
+
+        <label data-i18n="setup.userNameLabel">User name</label>
+        <input id="setupUserName" type="text" data-i18n-placeholder="setup.userNamePlaceholder" placeholder="John Smith" />
+
+        <label data-i18n="setup.userEmailLabel">User email</label>
+        <input id="setupUserEmail" type="email" data-i18n-placeholder="setup.userEmailPlaceholder" placeholder="j.smith@company.com" />
+
+        <label data-i18n="setup.userPhoneLabel">Phone number</label>
+        <input id="setupUserPhone" type="tel" data-i18n-placeholder="setup.userPhonePlaceholder" placeholder="+1 778 288 3053" />
+
+        <label data-i18n="setup.userDepartmentLabel">Department</label>
+        <input id="setupUserDepartment" type="text" data-i18n-placeholder="setup.userDepartmentPlaceholder" placeholder="e.g. Accounting, IT, Sales" />
+
+        <button id="btnRegister" class="btn-primary" data-i18n="setup.registerButton">Register Device</button>
+        <button id="btnCancelEdit" class="btn-secondary" style="display:none;" data-i18n="setup.cancelButton">Cancel</button>
+        <p class="error" id="setupError"></p>
+      </div>
     </section>
 
     <!-- ===== NEW TICKET ===== -->

@@ -58,6 +58,35 @@ async function registerDevice(payload) {
   return callApi('/api/v1/device/register', payload);
 }
 
+/**
+ * Pairing-code first-install path: no apiKey needed yet (the endpoint is
+ * public/unauthenticated on the server - customer_id is resolved securely
+ * from the pairing code itself). The response includes a per-device api_key
+ * the caller should save and use for every call from then on - this is the
+ * ONLY time that key is ever sent in plaintext.
+ */
+async function pairDevice(odooBaseUrl, payload) {
+  const http = axios.create({
+    baseURL: odooBaseUrl.replace(/\/+$/, ''),
+    timeout: 15000,
+    headers: { 'Content-Type': 'application/json' },
+  });
+  const response = await http.post('/api/v1/device/pair', {
+    jsonrpc: '2.0',
+    method: 'call',
+    params: payload,
+  });
+  const data = response.data;
+  if (data.error) {
+    throw new Error(data.error.data?.message || data.error.message || 'Lỗi không xác định từ server');
+  }
+  const result = data.result;
+  if (result && typeof result === 'object' && !Array.isArray(result) && result.error) {
+    throw new Error(result.error);
+  }
+  return result;
+}
+
 async function heartbeat(deviceId, payload = {}) {
   return callApi(`/api/v1/device/${deviceId}/heartbeat`, payload);
 }
@@ -137,6 +166,7 @@ async function verifyManager(apiKey) {
 
 module.exports = {
   registerDevice,
+  pairDevice,
   heartbeat,
   createTicket,
   getDeviceTickets,

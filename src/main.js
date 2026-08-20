@@ -129,6 +129,44 @@ async function registerDeviceWithBackend(formData) {
   return result;
 }
 
+async function pairDeviceWithBackend(formData) {
+  const baseUrl = (formData.odooBaseUrl || getConfig().odooBaseUrl || '').trim();
+  if (!baseUrl) {
+    throw new Error('Missing VM TECH server address.');
+  }
+  const info = await collectDeviceInfo();
+  const result = await api.pairDevice(baseUrl, {
+    pairing_code: formData.pairingCode,
+    hostname: info.hostname,
+    serial_number: info.machine_id,
+    os_info: info.os_info,
+    cpu_info: info.cpu_info,
+    ram_gb: info.ram_gb,
+    disk_info: info.disk_info,
+    mac_address: info.mac_address,
+    ip_address: info.ip_address,
+    ultraview_id: formData.ultraviewId,
+    end_user_name: formData.endUserName,
+    end_user_email: formData.endUserEmail,
+    end_user_phone: formData.endUserPhone || '',
+    end_user_department: formData.endUserDepartment || '',
+  });
+  // result.api_key is this device's own dedicated credential, minted server-side
+  // for exactly this pairing - saved here and never shown to the end user.
+  setConfig({
+    odooBaseUrl: baseUrl,
+    apiKey: result.api_key,
+    customerId: result.customer_id,
+    deviceId: result.device_id,
+    ultraviewId: formData.ultraviewId,
+    endUserName: formData.endUserName,
+    endUserEmail: formData.endUserEmail,
+    endUserPhone: formData.endUserPhone || '',
+    endUserDepartment: formData.endUserDepartment || '',
+  });
+  return result;
+}
+
 async function tryRecoverDeviceId() {
   // Trường hợp đặc biệt: đã có đủ server/apiKey/customerId (config cũ hợp lệ) nhưng
   // thiếu deviceId - có thể do lần đăng ký trước bị lỗi giữa đường, hoặc config được
@@ -248,6 +286,12 @@ ipcMain.handle('device:collectInfo', async () => collectDeviceInfo());
 
 ipcMain.handle('device:register', async (event, formData) => {
   const result = await registerDeviceWithBackend(formData);
+  startHeartbeatLoop();
+  return result;
+});
+
+ipcMain.handle('device:pairWithCode', async (event, formData) => {
+  const result = await pairDeviceWithBackend(formData);
   startHeartbeatLoop();
   return result;
 });

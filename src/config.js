@@ -9,8 +9,10 @@ const { app } = require('electron');
 
 const CONFIG_FILE = path.join(app.getPath('userData'), 'config.json');
 
+const DEFAULT_ODOO_BASE_URL = 'https://vmtech.ca';
+
 const DEFAULTS = {
-  odooBaseUrl: '',       // ví dụ: https://erp.yourcompany.com
+  odooBaseUrl: DEFAULT_ODOO_BASE_URL,
   apiKey: '',             // API key đã tạo trong Odoo (Settings > Technical > API Keys)
   customerId: null,       // id res.partner của khách hàng (cấu hình khi setup lần đầu)
   deviceId: null,         // id it.customer.device - tự động lưu sau khi đăng ký lần đầu
@@ -59,4 +61,4 @@ function hasServerCredentials() {
   return Boolean(c.odooBaseUrl && c.apiKey && c.customerId);
 }
 
-module.exports = { getConfig, setConfig, isConfigured, hasServerCredentials, CONFIG_FILE };
+module.exports = { getConfig, setConfig, isConfigured, hasServerCredentials, CONFIG_FILE, DEFAULT_ODOO_BASE_URL };
